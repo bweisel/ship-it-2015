@@ -79,24 +79,20 @@ function activeAppName()
 end
 
 function onPeriodic()
-    local currentYaw = myo.getYaw()
-    local currentRoll = myo.getRoll()
-    local deltaYaw = calculateDeltaRadians(currentYaw, centreYaw)
+    -- local currentYaw = myo.getYaw()
+    -- local deltaYaw = calculateDeltaRadians(currentYaw, centreYaw)
+	local currentRoll = myo.getRoll()
     deltaRoll = calculateDeltaRadians(currentRoll, centreRoll);
-    printCount = printCount + 1
-    if printCount >= 200 then
-        myo.debug("deltaYaw = " .. deltaYaw .. ", centreYaw = " .. centreYaw .. ", currentYaw = " .. currentYaw)
-        myo.debug("deltaRoll = " .. deltaRoll .. " currentRoll = " .. currentRoll)
-        printCount = 0
-    end
 	
-	if (deltaRoll < -ROLL_DEADZONE) then
-        flyLeft()
-    elseif (deltaRoll > ROLL_DEADZONE) then
-		flyRight()
-    else
-        flyNeutral()
-    end
+	if (not mouseEnabled) then
+		if (deltaRoll < -ROLL_DEADZONE) then
+			flyLeft()
+		elseif (deltaRoll > ROLL_DEADZONE) then
+			flyRight()
+		else
+			flyNeutral()
+		end
+	end
 end
 
 function flyLeft()
