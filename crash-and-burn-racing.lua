@@ -32,8 +32,8 @@ TWOPI = PI * 2
 flyingLeft = false
 flyingRight = false
 
-togglingMouseControl = 0
-mouseEnabled = false
+toggleMouseControl = true
+mouseEnabled = true
 
 printCount = 0
 
@@ -44,67 +44,41 @@ function onForegroundWindowChange(app, title)
     if (titleMatch) then
 		myo.debug("Title Match")
         myo.setLockingPolicy("none")
-		centre()
     end
     return titleMatch;
 end
 
 function onPoseEdge(pose, edge)
     myo.debug("onPoseEdge: " .. pose .. ", " .. edge)
-    if (edge == "on") then
-		myo.debug("edge on")
-		if (pose == "fist") then
-			myo.debug("fist")
-			jump()
+	if (mouseEnabled) then
+		if (edge == "on") then
+			if (pose == "doubleTap") then
+				leftClick()
+			elseif (pose == "fist") then
+				enableGameMode()
+			end
 		end
-        --if (pose == "fist") then
-        --    centre()
-        --    if (mouseEnabled) then
-        --        toggleMouseControl()
-        --    end
-        --elseif (pose == "fingersSpread") then
-        --    escape();
-        --elseif (pose == "waveIn" or pose == "waveOut") then
-        --    if (math.abs(deltaRoll) > ROLL_DEADZONE) then
-        --        jump()
-        --    elseif (pose == "waveIn") then
-        --        leftClick()
-        --    else
-        --       if (mouseEnabled) then
-        --            toggleMouseControl();
-        --        else
-        --            togglingMouseControl = myo.getTimeMilliseconds();
-        --        end
-        --    end
-        --end
-    else
-        flyNeutral()
-		--togglingMouseControl = 0
-    end
+	else
+		if (edge == "on") then
+			if (pose == "fist") then
+				myo.debug("fist")
+				shoot()
+			elseif (pose == "waveIn") then
+				pause()
+			elseif (pose == "doubleTap") then
+				enableMenuMode()
+			end
+		else
+			flyNeutral()
+		end
+	end
 end
 
 function activeAppName()
     return "Crash and Burn"
 end
 
-function centre()
-    --myo.debug("Centred")
-    centreYaw = myo.getYaw()
-    centreRoll = myo.getRoll()
-    myo.controlMouse(false);
-    myo.vibrate("short")
-    -- BEN myo.keyboard("return", "press")
-end
-
 function onPeriodic()
-    -- BEN if (togglingMouseControl > 0 and myo.getTimeMilliseconds() > (togglingMouseControl + MOUSE_CONTROL_TOGGLE_DURATION)) then
-    -- BEN     togglingMouseControl = 0
-    -- BEN     toggleMouseControl()
-    -- BEN  end
-    --if (centreYaw == 0) then
-	--	myo.debug("returning; center yaw = 0")
-    --   return
-    --end
     local currentYaw = myo.getYaw()
     local currentRoll = myo.getRoll()
     local deltaYaw = calculateDeltaRadians(currentYaw, centreYaw)
@@ -115,9 +89,10 @@ function onPeriodic()
         myo.debug("deltaRoll = " .. deltaRoll .. " currentRoll = " .. currentRoll)
         printCount = 0
     end
-    if (deltaYaw < -YAW_DEADZONE) then
+	
+	if (deltaRoll < -ROLL_DEADZONE) then
         flyLeft()
-    elseif (deltaYaw > YAW_DEADZONE) then
+    elseif (deltaRoll > ROLL_DEADZONE) then
 		flyRight()
     else
         flyNeutral()
@@ -126,39 +101,39 @@ end
 
 function flyLeft()
     if (flyingRight) then
-        myo.keyboard("d","up")
+        myo.keyboard("d", "up")
         flyingRight = false
     end
     if (not flyingLeft) then
-        myo.keyboard("a","down")
+        myo.keyboard("a", "down")
         flyingLeft = true;
     end
 end
 
 function flyRight()
     if (flyingLeft) then
-        myo.keyboard("a","up")
+        myo.keyboard("a", "up")
         flyingLeft = false
     end
     if (not flyingRight) then
-        myo.keyboard("d","down")
+        myo.keyboard("d", "down")
         flyingRight = true
     end
 end
 
-function jump()
-    myo.debug("Jump!")
+function shoot()
+	myo.keyboard("space", "press")
+    myo.debug("Boom!")
 	myo.vibrate("short")
-    myo.keyboard("space","press")
 end
 
 function flyNeutral()
     if  (flyingLeft) then
-        myo.keyboard("a","up")
+        myo.keyboard("a", "up")
         flyingLeft = false
     end
     if (flyingRight) then
-        myo.keyboard("d","up")
+        myo.keyboard("d", "up")
         flyingRight = false
     end
 end
@@ -174,26 +149,30 @@ function calculateDeltaRadians(currentYaw, centreYaw)
     return deltaYaw
 end
 
-function toggleMouseControl()
-    mouseEnabled = not mouseEnabled
-    myo.vibrate("medium")
-    if (mouseEnabled) then
-        --myo.debug("Mouse control enabled")        
-        centreYaw = 0
-        flyNeutral()
-    else
-        --myo.debug("Mouse control disabled")
-    end
+function enableGameMode()
+    mouseEnabled = false
+    myo.vibrate("short")
+    center()
     myo.controlMouse(mouseEnabled);
 end
 
+function enableMenuMode()
+    mouseEnabled = true
+    myo.vibrate("short")
+	centreYaw = 0
+    myo.controlMouse(mouseEnabled);
+end
+
+function center()
+    centreYaw = myo.getYaw()
+    centreRoll = myo.getRoll()
+end
+
 function leftClick()
-    --myo.debug("Left click!")
     myo.mouse("left", "click")
 end
 
-function escape()
-    --myo.debug("Escape!")
+function pause()
     centreYaw = 0
-    myo.keyboard("escape","press")
+    myo.keyboard("escape", "press")
 end 
