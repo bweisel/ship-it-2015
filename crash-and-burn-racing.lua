@@ -157,6 +157,7 @@ function enableMenuMode()
     myo.vibrate("short")
 	centreYaw = 0
     myo.controlMouse(mouseEnabled);
+    myo.centerMousePosition();
 end
 
 function center()
