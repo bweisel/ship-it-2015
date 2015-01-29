@@ -17,8 +17,8 @@ Controls:
 - Many
  ]]
  
-centreYaw = 0
-centreRoll = 0
+centerYaw = 0
+centerRoll = 0
 
 deltaRoll = 0
 
@@ -80,9 +80,9 @@ end
 
 function onPeriodic()
     -- local currentYaw = myo.getYaw()
-    -- local deltaYaw = calculateDeltaRadians(currentYaw, centreYaw)
+    -- local deltaYaw = calculateDeltaRadians(currentYaw, centerYaw)
 	local currentRoll = myo.getRoll()
-    deltaRoll = calculateDeltaRadians(currentRoll, centreRoll);
+    deltaRoll = calculateDeltaRadians(currentRoll, centerRoll);
 	
 	if (not mouseEnabled) then
 		if (deltaRoll < -ROLL_DEADZONE) then
@@ -134,8 +134,8 @@ function flyNeutral()
     end
 end
 
-function calculateDeltaRadians(currentYaw, centreYaw)
-    local deltaYaw = currentYaw - centreYaw
+function calculateDeltaRadians(currentYaw, centerYaw)
+    local deltaYaw = currentYaw - centerYaw
     
     if (deltaYaw > PI) then
         deltaYaw = deltaYaw - TWOPI
@@ -155,14 +155,14 @@ end
 function enableMenuMode()
     mouseEnabled = true
     myo.vibrate("short")
-	centreYaw = 0
+	centerYaw = 0
     myo.controlMouse(mouseEnabled);
     myo.centerMousePosition();
 end
 
 function center()
-    centreYaw = myo.getYaw()
-    centreRoll = myo.getRoll()
+    centerYaw = myo.getYaw()
+    centerRoll = myo.getRoll()
 end
 
 function leftClick()
@@ -170,6 +170,6 @@ function leftClick()
 end
 
 function pause()
-    centreYaw = 0
+    centerYaw = 0
     myo.keyboard("escape", "press")
 end 
