@@ -6,14 +6,14 @@ description = [[
 Crash and Burn Racing
 ]]
  
- link = [[]]
+link = [[]]
  
- controls = [[
+controls = [[
 Controls:
 - TBD
  ]]
  
- knownIssues = [[
+knownIssues = [[
 - Many
  ]]
  
@@ -29,8 +29,8 @@ MOUSE_CONTROL_TOGGLE_DURATION = 1000
 PI = 3.1416
 TWOPI = PI * 2
 
-flyingLeft = false
-flyingRight = false
+movingLeft = false
+movingRight = false
 
 toggleMouseControl = true
 mouseEnabled = true
@@ -69,7 +69,7 @@ function onPoseEdge(pose, edge)
 				enableMenuMode()
 			end
 		else
-			flyNeutral()
+			moveNeutral()
 		end
 	end
 end
@@ -86,34 +86,34 @@ function onPeriodic()
 	
 	if (not mouseEnabled) then
 		if (deltaRoll < -ROLL_DEADZONE) then
-			flyLeft()
+			moveLeft()
 		elseif (deltaRoll > ROLL_DEADZONE) then
-			flyRight()
+			moveRight()
 		else
-			flyNeutral()
+			moveNeutral()
 		end
 	end
 end
 
-function flyLeft()
-    if (flyingRight) then
+function moveLeft()
+    if (movingRight) then
         myo.keyboard("d", "up")
-        flyingRight = false
+        movingRight = false
     end
-    if (not flyingLeft) then
+    if (not movingLeft) then
         myo.keyboard("a", "down")
-        flyingLeft = true;
+        movingLeft = true;
     end
 end
 
-function flyRight()
-    if (flyingLeft) then
+function moveRight()
+    if (movingLeft) then
         myo.keyboard("a", "up")
-        flyingLeft = false
+        movingLeft = false
     end
-    if (not flyingRight) then
+    if (not movingRight) then
         myo.keyboard("d", "down")
-        flyingRight = true
+        movingRight = true
     end
 end
 
@@ -123,14 +123,14 @@ function shoot()
 	myo.vibrate("short")
 end
 
-function flyNeutral()
-    if  (flyingLeft) then
+function moveNeutral()
+    if  (movingLeft) then
         myo.keyboard("a", "up")
-        flyingLeft = false
+        movingLeft = false
     end
-    if (flyingRight) then
+    if (movingRight) then
         myo.keyboard("d", "up")
-        flyingRight = false
+        movingRight = false
     end
 end
 
@@ -172,4 +172,4 @@ end
 function pause()
     centerYaw = 0
     myo.keyboard("escape", "press")
-end 
+end
