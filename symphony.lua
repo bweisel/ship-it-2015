@@ -1,9 +1,9 @@
-scriptId = 'com.bweisel.shipit.testscript'
-scriptTitle = "Test Script"
+scriptId = 'com.bweisel.shipit.symphony'
+scriptTitle = "Symphony"
 scriptDetailsUrl = ""
 
 description = [[
-Test Script
+Symphony
 ]]
  
 link = [[]]
@@ -21,13 +21,13 @@ mouseEnabled = false
 waveOutTimer = 0
  
 function activeAppName()
-    return "Test Script"
+    return "Symphony"
 end
 
 function onForegroundWindowChange(app, title)
     myo.debug("onForegroundWindowChange: " .. app .. ", " .. title)
 	-- Symphony.exe, Symphony
-    local titleMatch = app == "notepad++.exe"
+    local titleMatch = string.match(title, "Symphony") ~= nil or platform == "Windows" and app == "Symphony.exe"
 	
     if (titleMatch) then
         myo.setLockingPolicy("none")
@@ -58,7 +58,7 @@ function onPoseEdge(pose, edge)
 end
 
 function onPeriodic()
-	if (waveOutTimer > 0 and myo.getTimeMilliseconds() > (waveOutTimer + 1000)) then
+	if (waveOutTimer > 0 and myo.getTimeMilliseconds() > (waveOutTimer + 1750)) then
 		waveOutTimer = 0
 		toggleMouseControl()
 	end
